@@ -1,0 +1,59 @@
+{
+  "id": "/",
+  "name": "RD TV - Canales Dominicanos",
+  "short_name": "RD TV",
+  "description": "Televisión dominicana en vivo: Telemicro, Color Visión, CDN 37, Telesistema y más en tu Smart TV y Android.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay", "minimal-ui"],
+  "orientation": "any",
+  "theme_color": "#e50914",
+  "background_color": "#09090b",
+  "lang": "es-DO",
+  "dir": "ltr",
+  "categories": ["entertainment", "tv", "multimedia"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Modo Smart TV",
+      "short_name": "Smart TV",
+      "description": "Abrir interfaz para Smart TV con control remoto",
+      "url": "/?mode=tv",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Pelota LIDOM / Deportes",
+      "short_name": "Deportes",
+      "description": "Ver canales de deportes y béisbol dominicano",
+      "url": "/?cat=deportes",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}
