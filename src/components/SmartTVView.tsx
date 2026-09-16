@@ -313,8 +313,38 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [channels.length, handleNumericInput, volume, triggerOSD, currentChannel.id, onToggleFavorite, onExitTVMode]);
 
-  const channelUp = () => setSelectedIndex((prev) => (prev + 1) % channels.length);
-  const channelDown = () => setSelectedIndex((prev) => (prev - 1 + channels.length) % channels.length);
+  const channelUp = () => {
+    setSelectedIndex((prev) => (prev + 1) % channels.length);
+    triggerOSD();
+  };
+  const channelDown = () => {
+    setSelectedIndex((prev) => (prev - 1 + channels.length) % channels.length);
+    triggerOSD();
+  };
+
+  // Touch Swipe Gesture for Smart TV / Mobile touch screens
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartYRef.current;
+    if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      if (deltaX < 0) {
+        channelUp();
+      } else {
+        channelDown();
+      }
+    }
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+  };
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -337,9 +367,39 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black text-white flex flex-col overflow-hidden font-['Plus_Jakarta_Sans',sans-serif] select-none">
+    <div
+      className="fixed inset-0 z-50 bg-black text-white flex flex-col overflow-hidden font-['Plus_Jakarta_Sans',sans-serif] select-none"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Smart TV Fullscreen Video Stage */}
-      <div className="relative flex-1 w-full h-full bg-black flex items-center justify-center overflow-hidden">
+      <div className="relative flex-1 w-full h-full bg-black flex items-center justify-center overflow-hidden group">
+        {/* Left Side Channel Switch Button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            channelDown();
+          }}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 p-4 rounded-full bg-black/60 hover:bg-red-600 text-white/70 hover:text-white border border-white/20 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all cursor-pointer shadow-2xl hover:scale-110"
+          title="Canal Anterior (Flecha Izquierda)"
+        >
+          <ChevronLeft className="w-8 h-8" />
+        </button>
+
+        {/* Right Side Channel Switch Button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            channelUp();
+          }}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 p-4 rounded-full bg-black/60 hover:bg-red-600 text-white/70 hover:text-white border border-white/20 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all cursor-pointer shadow-2xl hover:scale-110"
+          title="Siguiente Canal (Flecha Derecha)"
+        >
+          <ChevronRight className="w-8 h-8" />
+        </button>
+
         {currentSource?.type === "embed" ? (
           <iframe
             src={currentSource.url}

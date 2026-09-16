@@ -13,6 +13,7 @@ import {
   Heart,
   Check,
   ChevronRight,
+  ChevronLeft,
   Flame,
   MessageSquare,
   Sparkles,
@@ -207,9 +208,93 @@ export const LivePlayerModal: React.FC<LivePlayerModalProps> = ({
     };
   }, [currentSource, sources.length, activeSourceIndex]);
 
-  // Handle escape key
+  // Fullscreen state listener
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
+  // Channel sequence switching (Next / Previous channel)
+  const currentChannelIndex = React.useMemo(() => {
+    if (!channel || allChannels.length === 0) return 0;
+    const idx = allChannels.findIndex((c) => c.id === channel.id);
+    return idx !== -1 ? idx : 0;
+  }, [channel, allChannels]);
+
+  const [channelSwitchFeedback, setChannelSwitchFeedback] = useState<{
+    name: string;
+    channelNumber: number;
+    direction: "next" | "prev";
+  } | null>(null);
+
+  const goToNextChannel = useCallback(() => {
+    if (allChannels.length === 0) return;
+    const nextIdx = (currentChannelIndex + 1) % allChannels.length;
+    const nextChan = allChannels[nextIdx];
+    setChannelSwitchFeedback({
+      name: nextChan.name,
+      channelNumber: nextChan.channelNumber,
+      direction: "next",
+    });
+    onSelectChannel(nextChan);
+    setTimeout(() => setChannelSwitchFeedback(null), 2500);
+  }, [allChannels, currentChannelIndex, onSelectChannel]);
+
+  const goToPrevChannel = useCallback(() => {
+    if (allChannels.length === 0) return;
+    const prevIdx = (currentChannelIndex - 1 + allChannels.length) % allChannels.length;
+    const prevChan = allChannels[prevIdx];
+    setChannelSwitchFeedback({
+      name: prevChan.name,
+      channelNumber: prevChan.channelNumber,
+      direction: "prev",
+    });
+    onSelectChannel(prevChan);
+    setTimeout(() => setChannelSwitchFeedback(null), 2500);
+  }, [allChannels, currentChannelIndex, onSelectChannel]);
+
+  // Touch Swipe Gesture for full screen channel flipping on mobile & tablets
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null || touchStartYRef.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartYRef.current;
+    // Horizontal swipe threshold 60px, ensure horizontal is dominant
+    if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      if (deltaX < 0) {
+        // Swipe left -> next channel
+        goToNextChannel();
+      } else {
+        // Swipe right -> previous channel
+        goToPrevChannel();
+      }
+    }
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
+  };
+
+  // Keyboard navigation & Smart TV Remote control keys (ArrowRight / ArrowLeft / ChannelUp / ChannelDown)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept if user is typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
       if (e.key === "Escape") {
         if (isFullscreen) {
           document.exitFullscreen?.().catch(() => {});
@@ -217,11 +302,48 @@ export const LivePlayerModal: React.FC<LivePlayerModalProps> = ({
         } else {
           onClose();
         }
+        return;
+      }
+
+      // Next channel with Right Arrow or ChannelUp
+      if (e.key === "ArrowRight" || e.key === "ChannelUp" || e.key === "PageDown") {
+        e.preventDefault();
+        goToNextChannel();
+        return;
+      }
+
+      // Previous channel with Left Arrow or ChannelDown
+      if (e.key === "ArrowLeft" || e.key === "ChannelDown" || e.key === "PageUp") {
+        e.preventDefault();
+        goToPrevChannel();
+        return;
+      }
+
+      // Toggle fullscreen with 'f' or 'F'
+      if (e.key === "f" || e.key === "F") {
+        e.preventDefault();
+        toggleFullscreen();
+        return;
+      }
+
+      // Space or Enter to toggle play/pause
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        togglePlay();
+        return;
+      }
+
+      // 'm' or 'M' to mute/unmute
+      if (e.key === "m" || e.key === "M") {
+        e.preventDefault();
+        toggleMute();
+        return;
       }
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isFullscreen, onClose]);
+  }, [isFullscreen, onClose, goToNextChannel, goToPrevChannel]);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -417,9 +539,56 @@ export const LivePlayerModal: React.FC<LivePlayerModalProps> = ({
         </div>
 
         {/* Main Player Stage & Schedule Split */}
-        <div className="relative flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden bg-black">
+        <div
+          className="relative flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden bg-black"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           {/* Video Player Box */}
           <div className="relative flex-1 bg-black flex items-center justify-center overflow-hidden aspect-video group">
+            {/* Previous Channel Side Button (Hover / Touch on screen edge) */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                goToPrevChannel();
+              }}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-40 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-red-600/90 text-white/80 hover:text-white border border-white/20 backdrop-blur-md opacity-0 group-hover:opacity-100 sm:opacity-40 transition-all cursor-pointer shadow-xl hover:scale-110"
+              title="Canal Anterior (Flecha Izquierda)"
+            >
+              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+
+            {/* Next Channel Side Button (Hover / Touch on screen edge) */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                goToNextChannel();
+              }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-40 p-2.5 sm:p-3 rounded-full bg-black/60 hover:bg-red-600/90 text-white/80 hover:text-white border border-white/20 backdrop-blur-md opacity-0 group-hover:opacity-100 sm:opacity-40 transition-all cursor-pointer shadow-xl hover:scale-110"
+              title="Siguiente Canal (Flecha Derecha)"
+            >
+              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+
+            {/* Channel Change Floating OSD HUD (Feedback al cambiar con flechas o swipe) */}
+            {channelSwitchFeedback && (
+              <div className="absolute top-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-black/85 backdrop-blur-md border border-red-500/50 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-red-600 text-white font-extrabold text-sm">
+                  {channelSwitchFeedback.channelNumber}
+                </span>
+                <div className="text-left">
+                  <div className="text-[10px] uppercase font-bold text-red-400 tracking-wider flex items-center gap-1">
+                    {channelSwitchFeedback.direction === "next" ? "▶ Siguiente Canal" : "◀ Canal Anterior"}
+                  </div>
+                  <div className="text-sm font-black text-white truncate max-w-xs">
+                    {channelSwitchFeedback.name}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* 1. HLS Video Player */}
             {currentSource?.type === "hls" && (
               <video
