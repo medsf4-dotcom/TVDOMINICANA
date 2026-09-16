@@ -268,16 +268,33 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
           {/* TAB 2: INSTALAR APP PWA */}
           {activeTab === "pwa" && (
             <div className="space-y-6">
-              {/* Solution to user doubt: App with built-in player */}
-              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-3 text-xs">
-                <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <div className="font-bold text-emerald-300">
-                    ¡Esta opción ya trae su propio reproductor integrado!
+              {/* Direct Reality Check for Smart TVs */}
+              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 text-xs">
+                <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                <div className="space-y-1.5">
+                  <div className="font-bold text-amber-300 text-sm">
+                    ¿Por qué en tu Smart TV NO aparece el botón de instalar PWA?
                   </div>
                   <p className="text-zinc-300 leading-relaxed">
-                    No necesitas descargar VLC ni ningún otro reproductor externo. Al instalarla como <strong>Aplicación Web (PWA)</strong> en tu PC, celular o Smart TV, obtienes la app completa con su propio reproductor de video HLS, cambio de canales con teclado/control/flechas, pantalla completa y lista de canales dominicanos.
+                    Los navegadores integrados de la mayoría de Smart TVs (como los de <strong>Samsung Tizen, LG webOS o navegadores básicos de TV Box</strong>) <strong>no admiten instalación de PWA</strong>. Por eso es normal que en la pantalla de tu TV no aparezca ninguna opción de &ldquo;Instalar&rdquo;.
                   </p>
+                  <p className="text-zinc-300 leading-relaxed font-medium">
+                    No te preocupes: en televisores hay <strong>2 formas sencillas y 100% garantizadas</strong> para ver RD TV:
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                    <div className="p-2.5 rounded-lg bg-zinc-900/90 border border-zinc-800">
+                      <div className="text-emerald-400 font-bold mb-1">Opción A (La más fácil): Guardar en Favoritos del TV</div>
+                      <p className="text-zinc-400 text-[11px]">
+                        Abre este enlace en el navegador de tu TV y simplemente pulsa en la estrella o <strong>&ldquo;Añadir a Marcadores / Favoritos&rdquo;</strong>. Se abrirá en pantalla completa cada vez que entres con un solo clic.
+                      </p>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-zinc-900/90 border border-zinc-800">
+                      <div className="text-red-400 font-bold mb-1">Opción B: Lista M3U con VLC / IPTV (Recomendada)</div>
+                      <p className="text-zinc-400 text-[11px]">
+                        Instala <strong>VLC</strong> o <strong>TiviMate</strong> gratis desde la tienda de tu TV, copia la lista por USB o pon el enlace, y tendrás todos los canales organizados en la pantalla principal de tu TV.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -300,25 +317,23 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
                   {isInstalled ? (
                     <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 text-xs font-bold shrink-0">
                       <CheckCircle className="w-4 h-4" />
-                      <span>App Instalada (Modo Standalone)</span>
+                      <span>¡App ya instalada en este equipo!</span>
                     </div>
-                  ) : isInstallable ? (
-                    <button
-                      type="button"
-                      onClick={install}
-                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-900/40 transition-all cursor-pointer shrink-0"
-                    >
-                      <Download className="w-4 h-4" />
-                      <span>Instalar App en este equipo</span>
-                    </button>
                   ) : (
                     <button
                       type="button"
-                      onClick={install}
-                      className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 text-xs font-semibold shrink-0 cursor-pointer"
+                      onClick={async () => {
+                        const success = await install();
+                        if (!success && !isInstallable) {
+                          alert(
+                            "Para instalarla en tu PC:\n\n1. Mira arriba en la barra de direcciones de Google Chrome o Edge (a la derecha de la URL).\n2. Haz clic en el ícono de pantalla con una flecha hacia abajo ('Instalar RD TV').\n3. Haz clic en 'Instalar' y listo, aparecerá el ícono en tu escritorio."
+                          );
+                        }
+                      }}
+                      className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-900/40 transition-all cursor-pointer shrink-0 animate-pulse hover:animate-none"
                     >
-                      <Smartphone className="w-4 h-4 text-red-500" />
-                      <span>Ver pasos de instalación</span>
+                      <Download className="w-4 h-4" />
+                      <span>{isInstallable ? "¡Hacer clic para Instalar en PC ahora!" : "Instalar en esta PC / Equipo"}</span>
                     </button>
                   )}
                 </div>
