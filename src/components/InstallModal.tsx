@@ -15,6 +15,7 @@ import {
   Sparkles,
   Info,
   Check,
+  AlertCircle,
 } from "lucide-react";
 import { usePWAInstall } from "../hooks/usePWAInstall";
 
@@ -24,7 +25,7 @@ interface InstallModalProps {
 }
 
 export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) => {
-  const [activeTab, setActiveTab] = useState<"usb" | "pwa" | "downloader" | "dev">("usb");
+  const [activeTab, setActiveTab] = useState<"pwa" | "usb" | "downloader" | "dev">("pwa");
   const [copiedUrl, setCopiedUrl] = useState(false);
   const { isInstallable, isInstalled, install, isIOS } = usePWAInstall();
 
@@ -78,19 +79,6 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
         <div className="flex items-center gap-2 px-5 pt-3 pb-1 border-b border-zinc-800/80 bg-zinc-900/30 overflow-x-auto scrollbar-none text-xs font-bold">
           <button
             type="button"
-            onClick={() => setActiveTab("usb")}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
-              activeTab === "usb"
-                ? "bg-red-600 text-white shadow-md shadow-red-900/30"
-                : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
-            }`}
-          >
-            <Usb className="w-4 h-4" />
-            <span>Memoria USB (Lista M3U)</span>
-          </button>
-
-          <button
-            type="button"
             onClick={() => setActiveTab("pwa")}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
               activeTab === "pwa"
@@ -99,7 +87,20 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
             }`}
           >
             <Smartphone className="w-4 h-4" />
-            <span>Instalar App Web (PWA)</span>
+            <span>Instalar App con Reproductor (PWA)</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("usb")}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
+              activeTab === "usb"
+                ? "bg-red-600 text-white shadow-md shadow-red-900/30"
+                : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+            }`}
+          >
+            <Usb className="w-4 h-4" />
+            <span>Memoria USB (Lista M3U para VLC / TV)</span>
           </button>
 
           <button
@@ -136,16 +137,17 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
             <div className="space-y-6">
               {/* Important clarification banner */}
               <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 text-xs">
-                <Info className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                <div className="space-y-1">
-                  <div className="font-bold text-amber-300">
-                    ¿Por qué este archivo pesa ~10 KB y no se instala solo?
+                <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                <div className="space-y-1.5">
+                  <div className="font-bold text-amber-300 text-sm">
+                    ¿Por qué tu PC te pide un reproductor al abrir este archivo?
                   </div>
                   <p className="text-zinc-300 leading-relaxed">
-                    Este archivo tiene extensión <strong className="text-white">.m3u</strong> (es una <em>lista de reproducción de canales</em>, no un ejecutable <em>.apk</em>). Por eso no se &ldquo;instala&rdquo; como una app: se <strong>abre directamente dentro de reproductores de TV</strong> como <strong className="text-white">VLC for Android</strong>, <strong className="text-white">TiviMate</strong> o <strong className="text-white">Kodi</strong>.
+                    Este archivo es una <strong>lista de canales (.m3u)</strong>, no es un instalador o programa ejecutable. Por esa razón, Windows o Mac te preguntan con qué programa abrirlo si no tienes instalado un reproductor como <strong>VLC Media Player</strong>.
                   </p>
-                  <p className="text-amber-200/90 font-medium">
-                    👉 Si lo que quieres es tener la <strong>aplicación completa con su propio icono en la pantalla de tu TV o celular</strong>, ve a la pestaña <button type="button" onClick={() => setActiveTab("pwa")} className="underline font-bold text-white hover:text-amber-300 cursor-pointer">Instalar App Web (PWA)</button>.
+                  <p className="text-emerald-300 bg-emerald-950/40 p-2.5 rounded-lg border border-emerald-500/30 font-medium">
+                    ✅ <strong>¿Quieres que la aplicación venga con su propio reproductor integrado sin instalar nada más?</strong><br />
+                    Haz clic aquí: <button type="button" onClick={() => setActiveTab("pwa")} className="underline font-bold text-white hover:text-emerald-200 cursor-pointer">Ir a &ldquo;Instalar App con Reproductor (PWA)&rdquo;</button>. Esa versión funciona tanto en PC como en Smart TV y celular con todo incluido.
                   </p>
                 </div>
               </div>
@@ -266,6 +268,19 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
           {/* TAB 2: INSTALAR APP PWA */}
           {activeTab === "pwa" && (
             <div className="space-y-6">
+              {/* Solution to user doubt: App with built-in player */}
+              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-3 text-xs">
+                <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <div className="font-bold text-emerald-300">
+                    ¡Esta opción ya trae su propio reproductor integrado!
+                  </div>
+                  <p className="text-zinc-300 leading-relaxed">
+                    No necesitas descargar VLC ni ningún otro reproductor externo. Al instalarla como <strong>Aplicación Web (PWA)</strong> en tu PC, celular o Smart TV, obtienes la app completa con su propio reproductor de video HLS, cambio de canales con teclado/control/flechas, pantalla completa y lista de canales dominicanos.
+                  </p>
+                </div>
+              </div>
+
               <div className="p-5 rounded-2xl bg-zinc-900 border border-zinc-800">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
@@ -274,11 +289,11 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
                         Instalación Directa como Aplicación (PWA Standalone)
                       </h3>
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                        192x192 &amp; 512x512 PNG OK
+                        Reproductor Incluido
                       </span>
                     </div>
                     <p className="text-xs text-zinc-400 mt-1 max-w-lg">
-                      Instala RD TV como una app independiente en tu teléfono Android, tablet, Smart TV o computadora. Se ejecuta en pantalla completa sin barra de direcciones ni bordes.
+                      Instala RD TV como una app independiente en tu computadora, teléfono Android o Smart TV. Se abre directamente en tu escritorio o pantalla de inicio sin depender de otros programas.
                     </p>
                   </div>
 
@@ -294,7 +309,7 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
                       className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-900/40 transition-all cursor-pointer shrink-0"
                     >
                       <Download className="w-4 h-4" />
-                      <span>Instalar en este dispositivo</span>
+                      <span>Instalar App en este equipo</span>
                     </button>
                   ) : (
                     <button
@@ -309,51 +324,50 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
                 </div>
               </div>
 
-              {/* Guía para Navegadores de Smart TV y Móvil */}
-              <div>
-                <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-                  <Tv className="w-4 h-4 text-red-500" />
-                  ¿Cómo instalarla desde el navegador de tu Smart TV o Teléfono?
-                </h4>
-                <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 space-y-3 text-xs">
-                  <div className="flex items-start gap-3">
-                    <span className="w-5 h-5 rounded-full bg-red-600/20 text-red-500 font-bold flex items-center justify-center shrink-0 mt-0.5">
-                      1
-                    </span>
-                    <p className="text-zinc-300">
-                      En tu Smart TV o teléfono, abre el navegador web (<strong className="text-white">Google Chrome</strong>,{" "}
-                      <strong className="text-white">TV Bro</strong>,{" "}
-                      <strong className="text-white">Amazon Silk</strong> o el navegador del TV).
-                    </p>
-                  </div>
+              {/* Guía según dispositivo: PC y Smart TV / Celular */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* En PC (Windows / Mac / Chrome / Edge) */}
+                <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 space-y-2.5 text-xs">
+                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Tv className="w-4 h-4 text-red-500" />
+                    En tu Computadora (Windows / Mac)
+                  </h4>
+                  <p className="text-zinc-400 text-[11px]">
+                    Si estás viendo esto en tu PC:
+                  </p>
+                  <ol className="space-y-2 list-decimal list-inside text-zinc-300">
+                    <li>
+                      Mira la <strong className="text-white">barra de direcciones</strong> arriba en tu navegador (Chrome o Edge).
+                    </li>
+                    <li>
+                      Verás un ícono pequeño de <strong className="text-white">computadora con flecha hacia abajo</strong> o <strong className="text-white">&ldquo;Instalar RD TV&rdquo;</strong>.
+                    </li>
+                    <li>
+                      Haz clic en él y pulsa <strong className="text-white">&ldquo;Instalar&rdquo;</strong>. Se creará un acceso directo en tu Escritorio y menú de inicio que abrirá la app con su reproductor propio.
+                    </li>
+                  </ol>
+                </div>
 
-                  <div className="flex items-start gap-3">
-                    <span className="w-5 h-5 rounded-full bg-red-600/20 text-red-500 font-bold flex items-center justify-center shrink-0 mt-0.5">
-                      2
-                    </span>
-                    <p className="text-zinc-300">
-                      Toca o haz clic en el menú del navegador (los <strong className="text-white">tres puntos verticales</strong> arriba a la derecha).
-                    </p>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <span className="w-5 h-5 rounded-full bg-red-600/20 text-red-500 font-bold flex items-center justify-center shrink-0 mt-0.5">
-                      3
-                    </span>
-                    <p className="text-zinc-300">
-                      Selecciona <strong className="text-white">&ldquo;Instalar aplicación&rdquo;</strong> o{" "}
-                      <strong className="text-white">&ldquo;Añadir a la pantalla principal&rdquo;</strong>.
-                    </p>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <span className="w-5 h-5 rounded-full bg-red-600/20 text-red-500 font-bold flex items-center justify-center shrink-0 mt-0.5">
-                      4
-                    </span>
-                    <p className="text-zinc-300">
-                      ¡Listo! La app se integrará a tu pantalla de inicio con su icono oficial en alta resolución y se abrirá en modo <strong className="text-red-400">standalone</strong> (pantalla completa sin marcos de navegador).
-                    </p>
-                  </div>
+                {/* En Smart TV y Teléfono */}
+                <div className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800 space-y-2.5 text-xs">
+                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Smartphone className="w-4 h-4 text-red-500" />
+                    En Smart TV o Teléfono
+                  </h4>
+                  <p className="text-zinc-400 text-[11px]">
+                    Si estás en la tele o en tu celular:
+                  </p>
+                  <ol className="space-y-2 list-decimal list-inside text-zinc-300">
+                    <li>
+                      Abre el navegador (<strong className="text-white">Chrome</strong>, <strong className="text-white">Amazon Silk</strong>, <strong className="text-white">TV Bro</strong>).
+                    </li>
+                    <li>
+                      Toca el menú de los <strong className="text-white">3 puntos</strong> arriba a la derecha.
+                    </li>
+                    <li>
+                      Elige <strong className="text-white">&ldquo;Instalar aplicación&rdquo;</strong> o <strong className="text-white">&ldquo;Añadir a pantalla principal&rdquo;</strong>.
+                    </li>
+                  </ol>
                 </div>
               </div>
             </div>
