@@ -1,5 +1,5 @@
-// RD TV Dominican Service Worker for PWA & Smart TV installability
-const CACHE_NAME = "rdtv-v2";
+// ELITVRD Service Worker for PWA & Smart TV installability
+const CACHE_NAME = "elitvrd-v1";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",

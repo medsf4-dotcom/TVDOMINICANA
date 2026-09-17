@@ -60,7 +60,7 @@ export const MobileView: React.FC<MobileViewProps> = ({
       <div className="sticky top-0 z-40 px-4 py-3 bg-[#111116]/95 backdrop-blur-md border-b border-zinc-800/80 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="font-['Bebas_Neue',sans-serif] text-2xl tracking-tight text-red-600 font-black">
-            RD TV
+            ELITVRD
           </span>
           <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-600/20 text-red-400 font-bold border border-red-500/30 uppercase tracking-wide">
             Móvil

@@ -420,7 +420,7 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
         <div className="absolute top-0 inset-x-0 p-6 flex items-center justify-between bg-gradient-to-b from-black/80 via-black/40 to-transparent z-20 pointer-events-none">
           <div className="flex items-center gap-3">
             <span className="font-['Bebas_Neue',sans-serif] text-3xl sm:text-4xl text-red-600 tracking-wider font-black drop-shadow-md">
-              RD TV <span className="text-white text-xl sm:text-2xl font-bold ml-1">SMART TV</span>
+              ELITVRD <span className="text-white text-xl sm:text-2xl font-bold ml-1">SMART TV</span>
             </span>
             <span className="px-2.5 py-0.5 rounded-full bg-red-600 text-white text-xs font-black uppercase tracking-widest animate-pulse">
               EN VIVO
@@ -431,7 +431,7 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
             {/* Clock */}
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-zinc-900/80 border border-zinc-700/80 backdrop-blur-md">
               <Clock className="w-4 h-4 text-amber-400" />
-              <span>{currentTime || "RD TV"}</span>
+              <span>{currentTime || "ELITVRD"}</span>
             </div>
 
             {/* Virtual Remote Button */}
@@ -603,7 +603,7 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
           {/* Remote Brand */}
           <div className="w-full flex items-center justify-between pb-3 border-b border-zinc-800 mb-4">
             <span className="font-['Bebas_Neue',sans-serif] text-xl text-red-500 font-bold">
-              CONTROL RD TV
+              CONTROL ELITVRD
             </span>
             <button
               type="button"

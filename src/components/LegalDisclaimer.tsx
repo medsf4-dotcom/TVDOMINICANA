@@ -22,7 +22,7 @@ export const LegalDisclaimer: React.FC = () => {
                 </span>
               </div>
               <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">
-                RD TV es un reproductor e indexador de enlaces públicos de señal abierta por internet. No aloja, almacena, retransmite ni cobra por contenidos protegidos.
+                ELITVRD es un reproductor e indexador de enlaces públicos de señal abierta por internet. No aloja, almacena, retransmite ni cobra por contenidos protegidos.
               </p>
             </div>
           </div>
@@ -53,7 +53,7 @@ export const LegalDisclaimer: React.FC = () => {
                 <span>1. Naturaleza Técnica de la Plataforma</span>
               </div>
               <p>
-                RD TV funciona estrictamente como un cliente web y reproductor multimedia de uso personal. Esta aplicación no posee servidores de transmisión, no realiza retransmisiones (re-streaming), no altera la señal de origen y no almacena copias de audio, video o transmisiones en vivo. Todos los flujos de video provienen de los enlaces oficiales de señal abierta (HLS / m3u8 / embeds) que las propias cadenas emisoras ponen a disposición pública en la web de forma gratuita.
+                ELITVRD funciona estrictamente como un cliente web y reproductor multimedia de uso personal. Esta aplicación no posee servidores de transmisión, no realiza retransmisiones (re-streaming), no altera la señal de origen y no almacena copias de audio, video o transmisiones en vivo. Todos los flujos de video provienen de los enlaces oficiales de señal abierta (HLS / m3u8 / embeds) que las propias cadenas emisoras ponen a disposición pública en la web de forma gratuita.
               </p>
             </div>
 

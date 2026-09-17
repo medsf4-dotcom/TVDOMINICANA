@@ -63,7 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
         {/* Left: Brand & Navigation */}
         <div className="flex items-center gap-6 lg:gap-8">
-          {/* RD TV Logo */}
+          {/* ELITVRD Logo */}
           <button
             type="button"
             onClick={() => onSelectCategory("todos")}
@@ -71,7 +71,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <div className="relative">
               <span className="font-black text-2xl sm:text-3xl tracking-tighter text-red-600 font-['Bebas_Neue',sans-serif] select-none group-hover:scale-105 transition-transform drop-shadow-[0_2px_8px_rgba(229,9,20,0.6)]">
-                RD TV
+                ELITVRD
               </span>
               <span className="absolute -top-1 -right-2 flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>

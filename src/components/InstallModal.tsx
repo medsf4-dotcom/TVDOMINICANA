@@ -279,7 +279,7 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
                     Los navegadores integrados de la mayoría de Smart TVs (como los de <strong>Samsung Tizen, LG webOS o navegadores básicos de TV Box</strong>) <strong>no admiten instalación de PWA</strong>. Por eso es normal que en la pantalla de tu TV no aparezca ninguna opción de &ldquo;Instalar&rdquo;.
                   </p>
                   <p className="text-zinc-300 leading-relaxed font-medium">
-                    No te preocupes: en televisores hay <strong>2 formas sencillas y 100% garantizadas</strong> para ver RD TV:
+                    No te preocupes: en televisores hay <strong>2 formas sencillas y 100% garantizadas</strong> para ver ELITVRD:
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                     <div className="p-2.5 rounded-lg bg-zinc-900/90 border border-zinc-800">
@@ -310,7 +310,7 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
                       </span>
                     </div>
                     <p className="text-xs text-zinc-400 mt-1 max-w-lg">
-                      Instala RD TV como una app independiente en tu computadora, teléfono Android o Smart TV. Se abre directamente en tu escritorio o pantalla de inicio sin depender de otros programas.
+                      Instala ELITVRD como una app independiente en tu computadora, teléfono Android o Smart TV. Se abre directamente en tu escritorio o pantalla de inicio sin depender de otros programas.
                     </p>
                   </div>
 
@@ -326,7 +326,7 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
                         const success = await install();
                         if (!success && !isInstallable) {
                           alert(
-                            "Para instalarla en tu PC:\n\n1. Mira arriba en la barra de direcciones de Google Chrome o Edge (a la derecha de la URL).\n2. Haz clic en el ícono de pantalla con una flecha hacia abajo ('Instalar RD TV').\n3. Haz clic en 'Instalar' y listo, aparecerá el ícono en tu escritorio."
+                            "Para instalarla en tu PC:\n\n1. Mira arriba en la barra de direcciones de Google Chrome o Edge (a la derecha de la URL).\n2. Haz clic en el ícono de pantalla con una flecha hacia abajo ('Instalar ELITVRD').\n3. Haz clic en 'Instalar' y listo, aparecerá el ícono en tu escritorio."
                           );
                         }
                       }}
@@ -355,7 +355,7 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
                       Mira la <strong className="text-white">barra de direcciones</strong> arriba en tu navegador (Chrome o Edge).
                     </li>
                     <li>
-                      Verás un ícono pequeño de <strong className="text-white">computadora con flecha hacia abajo</strong> o <strong className="text-white">&ldquo;Instalar RD TV&rdquo;</strong>.
+                      Verás un ícono pequeño de <strong className="text-white">computadora con flecha hacia abajo</strong> o <strong className="text-white">&ldquo;Instalar ELITVRD&rdquo;</strong>.
                     </li>
                     <li>
                       Haz clic en él y pulsa <strong className="text-white">&ldquo;Instalar&rdquo;</strong>. Se creará un acceso directo en tu Escritorio y menú de inicio que abrirá la app con su reproductor propio.
@@ -444,14 +444,14 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
                 <div className="flex items-center gap-2">
                   <h3 className="text-sm font-bold text-white flex items-center gap-2">
                     <Terminal className="w-4 h-4 text-emerald-400" />
-                    Cómo publicar RD TV en Google Play Store (Para Celulares y Smart TV)
+                    Cómo publicar ELITVRD en Google Play Store (Para Celulares y Smart TV)
                   </h3>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                     Google Play Oficial
                   </span>
                 </div>
                 <p className="text-zinc-400 mt-1.5 leading-relaxed">
-                  Para que cualquier usuario pueda buscar <strong>&ldquo;RD TV&rdquo;</strong> en la Play Store de su teléfono o de su Smart TV y presionar <strong>Instalar</strong>, se debe subir el paquete de la aplicación a Google Play Console.
+                  Para que cualquier usuario pueda buscar <strong>&ldquo;ELITVRD&rdquo;</strong> en la Play Store de su teléfono o de su Smart TV y presionar <strong>Instalar</strong>, se debe subir el paquete de la aplicación a Google Play Console.
                 </p>
               </div>
 
@@ -504,7 +504,7 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
                 <div className="p-3 rounded-xl bg-black/80 font-mono text-zinc-300 text-[11px] space-y-1.5 overflow-x-auto border border-zinc-800">
                   <div className="text-zinc-500"># 1. Instalar la herramienta oficial de Google</div>
                   <div className="text-emerald-400">npm install -g @bubblewrap/cli</div>
-                  <div className="text-zinc-500 mt-2"># 2. Inicializar con el manifiesto de RD TV</div>
+                  <div className="text-zinc-500 mt-2"># 2. Inicializar con el manifiesto de ELITVRD</div>
                   <div className="text-emerald-400">bubblewrap init --manifest=https://ais-pre-2h5cbz7mjqznoajju7n6mn-697794001347.us-east1.run.app/manifest.json</div>
                   <div className="text-zinc-500 mt-2"># 3. Compilar el archivo listo para Google Play</div>
                   <div className="text-emerald-400">bubblewrap build</div>

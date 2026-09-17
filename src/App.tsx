@@ -423,7 +423,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <span className="font-black text-2xl text-red-600 font-['Bebas_Neue',sans-serif]">
-                RD TV
+                ELITVRD
               </span>
               <span className="text-xs text-zinc-400">
                 &bull; Plataforma de Streaming de Televisión Dominicana
@@ -497,7 +497,7 @@ export default function App() {
           <LegalDisclaimer />
 
           <div className="text-center text-[11px] text-zinc-600 pt-4">
-            RD TV Dominicana &copy; {new Date().getFullYear()} &mdash; Hecho con orgullo para todos los dominicanos en la isla y en el mundo.
+            ELITVRD Dominicana &copy; {new Date().getFullYear()} &mdash; Hecho con orgullo para todos los dominicanos en la isla y en el mundo.
           </div>
         </div>
       </footer>

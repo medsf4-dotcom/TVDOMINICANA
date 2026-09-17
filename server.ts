@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 app.get("/api/health", (_req, res) => {
   res.json({
     status: "ok",
-    app: "RD TV - Canales Dominicanos",
+    app: "ELITVRD - Canales Dominicanos",
     time: new Date().toISOString(),
   });
 });
@@ -171,7 +171,7 @@ app.get(["/api/playlist.m3u", "/api/canales.m3u"], (req, res) => {
   const forceDownload = req.query.download === "true" || req.query.download === "1";
 
   const lines = [
-    `#EXTM3U x-tvg-url="https://epg.dominicana.tv/epg.xml" name="RD TV Dominicana"`,
+    `#EXTM3U x-tvg-url="https://epg.dominicana.tv/epg.xml" name="ELITVRD Dominicana"`,
   ];
 
   for (const ch of M3U_CHANNELS) {
@@ -368,7 +368,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`RD TV Dominicana server running on http://0.0.0.0:${PORT}`);
+    console.log(`ELITVRD Dominicana server running on http://0.0.0.0:${PORT}`);
   });
 }
 

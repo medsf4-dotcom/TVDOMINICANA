@@ -52,9 +52,9 @@
   <path d="M216 364 L296 364 L326 414 L186 414 Z" fill="#27272a" stroke="#3f3f46" stroke-width="4"/>
   <rect x="166" y="412" width="180" height="16" rx="8" fill="#e50914"/>
 
-  <!-- Badge Text "RD TV" -->
-  <text x="256" y="468" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="900" font-size="34" fill="#FFFFFF" text-anchor="middle" letter-spacing="4">
-    RD TV
+  <!-- Badge Text "ELITVRD" -->
+  <text x="256" y="468" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="900" font-size="28" fill="#FFFFFF" text-anchor="middle" letter-spacing="3">
+    ELITVRD
   </text>
   <text x="330" y="456" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="800" font-size="14" fill="#E50914" letter-spacing="1">
     LIVE

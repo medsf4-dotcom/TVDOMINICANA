@@ -1,6 +1,7 @@
 {
-  "name": "RD TV - Canales Dominicanos",
+  "name": "ELITVRD",
   "description": "Plataforma de streaming con los canales de televisión dominicana en vivo, modo Smart TV, descarga de listas M3U para USB y compatibilidad Android.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
+
