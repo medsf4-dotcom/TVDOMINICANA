@@ -14,6 +14,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { TVChannel, CategoryFilter } from "../types";
+import { LegalDisclaimer } from "./LegalDisclaimer";
 
 interface MobileViewProps {
   channels: TVChannel[];
@@ -288,6 +289,11 @@ export const MobileView: React.FC<MobileViewProps> = ({
             <p className="text-xs text-zinc-400 mt-1">Intenta con otra categoría o búsqueda.</p>
           </div>
         )}
+
+        {/* Legal Disclaimer & Limitation of Liability */}
+        <div className="pb-4">
+          <LegalDisclaimer />
+        </div>
       </div>
 
       {/* Fixed Mobile Bottom Navigation Bar */}

@@ -21,6 +21,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { TVChannel, CategoryFilter } from "../types";
+import { LegalDisclaimer } from "./LegalDisclaimer";
 
 interface TabletDashboardViewProps {
   channels: TVChannel[];
@@ -42,7 +43,7 @@ export const TabletDashboardView: React.FC<TabletDashboardViewProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(0.5);
   const [isLoading, setIsLoading] = useState(true);
   const [activeSourceIndex, setActiveSourceIndex] = useState(0);
 
@@ -101,7 +102,7 @@ export const TabletDashboardView: React.FC<TabletDashboardViewProps> = ({
       return;
     }
 
-    let retryCount = 0;
+    video.volume = volume;
 
     if (Hls.isSupported()) {
       const hls = new Hls({
@@ -117,6 +118,7 @@ export const TabletDashboardView: React.FC<TabletDashboardViewProps> = ({
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         setIsLoading(false);
+        video.volume = volume;
         video.play().catch(() => {
           video.muted = true;
           setIsMuted(true);
@@ -127,33 +129,26 @@ export const TabletDashboardView: React.FC<TabletDashboardViewProps> = ({
       hls.on(Hls.Events.ERROR, (_evt, data) => {
         if (data.fatal) {
           if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-            retryCount++;
-            if (retryCount <= 2) {
-              hls.startLoad();
-            } else if (sources.length > 1 && activeSourceIndex < sources.length - 1) {
-              console.log("Switching tablet player to backup source...");
-              setActiveSourceIndex((prev) => prev + 1);
-            }
+            hls.startLoad();
           } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
             hls.recoverMediaError();
           } else {
-            if (sources.length > 1 && activeSourceIndex < sources.length - 1) {
-              setActiveSourceIndex((prev) => prev + 1);
-            }
+            setIsLoading(false);
           }
         }
       });
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = streamUrl;
+      video.volume = volume;
       video.addEventListener("loadedmetadata", () => {
         setIsLoading(false);
-        video.play().catch(() => {});
+        video.volume = volume;
+        video.play().catch(() => {
+          video.muted = true;
+          setIsMuted(true);
+          video.play().catch(() => {});
+        });
       });
-      video.onerror = () => {
-        if (sources.length > 1 && activeSourceIndex < sources.length - 1) {
-          setActiveSourceIndex((prev) => prev + 1);
-        }
-      };
     } else {
       setIsLoading(false);
     }
@@ -181,8 +176,30 @@ export const TabletDashboardView: React.FC<TabletDashboardViewProps> = ({
   const toggleMute = () => {
     const v = videoRef.current;
     if (!v) return;
-    v.muted = !v.muted;
-    setIsMuted(v.muted);
+    const newMuted = !v.muted;
+    v.muted = newMuted;
+    setIsMuted(newMuted);
+    if (!newMuted) {
+      const targetVol = volume > 0 ? volume : 0.5;
+      v.volume = targetVol;
+      setVolume(targetVol);
+    }
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseFloat(e.target.value);
+    setVolume(val);
+    const v = videoRef.current;
+    if (v) {
+      v.volume = val;
+      if (val === 0) {
+        v.muted = true;
+        setIsMuted(true);
+      } else {
+        v.muted = false;
+        setIsMuted(false);
+      }
+    }
   };
 
   const filteredChannels = channels.filter((c) => {
@@ -303,14 +320,27 @@ export const TabletDashboardView: React.FC<TabletDashboardViewProps> = ({
                 >
                   {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                 </button>
-                <button
-                  type="button"
-                  onClick={toggleMute}
-                  className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
-                >
-                  {isMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4" />}
-                </button>
-                <span className="text-xs font-bold text-white drop-shadow-sm truncate max-w-[200px]">
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={toggleMute}
+                    className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                    title={isMuted ? "Activar audio" : "Silenciar"}
+                  >
+                    {isMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4" />}
+                  </button>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.05"
+                    value={isMuted ? 0 : volume}
+                    onChange={handleVolumeChange}
+                    className="w-16 sm:w-20 accent-red-600 h-1.5 bg-zinc-700 rounded-lg cursor-pointer"
+                    title={`Volumen: ${Math.round((isMuted ? 0 : volume) * 100)}%`}
+                  />
+                </div>
+                <span className="text-xs font-bold text-white drop-shadow-sm truncate max-w-[180px] hidden sm:inline">
                   {selectedChannel.name} &bull; {selectedChannel.city}
                 </span>
               </div>
@@ -555,6 +585,9 @@ export const TabletDashboardView: React.FC<TabletDashboardViewProps> = ({
             );
           })}
         </div>
+
+        {/* Legal Disclaimer & Limitation of Liability */}
+        <LegalDisclaimer />
       </div>
     </div>
   );

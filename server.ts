@@ -42,7 +42,16 @@ app.get("/api/health", (_req, res) => {
 });
 
 // Dominican Channels Definition for M3U playlist export (USB / Smart TV IPTV)
-const M3U_CHANNELS = [
+interface M3UChannel {
+  name: string;
+  tvgId: string;
+  group: string;
+  logo: string;
+  stream: string;
+  referer?: string;
+}
+
+const M3U_CHANNELS: M3UChannel[] = [
   {
     name: "Telemicro (Canal 5)",
     tvgId: "telemicro",
@@ -56,21 +65,21 @@ const M3U_CHANNELS = [
     tvgId: "colorvision",
     group: "Nacionales Populares",
     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Color_Visi%C3%B3n_logo.png/320px-Color_Visi%C3%B3n_logo.png",
-    stream: "https://cdn4.wind.do/streams/colorvision/colorvision_720.m3u8",
+    stream: "https://hls.tvabierta.net/hls/009.m3u8",
   },
   {
     name: "CDN 37 (Noticias 24H)",
     tvgId: "cdn37",
     group: "Noticias",
     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/CDN_37_logo.png/320px-CDN_37_logo.png",
-    stream: "https://cdn4.wind.do/streams/cdn37/cdn37_720.m3u8",
+    stream: "https://hls.tvabierta.net/hls/037.m3u8",
   },
   {
     name: "Telesistema (Canal 11)",
     tvgId: "telesistema",
     group: "Nacionales Populares",
     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Telesistema_logo.png/320px-Telesistema_logo.png",
-    stream: "https://cdn4.wind.do/streams/telesistema/telesistema_720.m3u8",
+    stream: "https://hls.tvabierta.net/hls/011.m3u8",
   },
   {
     name: "Teleantillas (Canal 2)",

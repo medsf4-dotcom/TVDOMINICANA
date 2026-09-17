@@ -60,7 +60,7 @@ export const LivePlayerModal: React.FC<LivePlayerModalProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(0.5);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -124,12 +124,13 @@ export const LivePlayerModal: React.FC<LivePlayerModalProps> = ({
     }
 
     const streamUrl = currentSource.url;
+    video.volume = volume;
 
     if (Hls.isSupported()) {
       const hls = new Hls({
         enableWorker: true,
         lowLatencyMode: true,
-        backBufferLength: 60,
+        backBufferLength: 45,
         manifestLoadingTimeOut: 10000,
         levelLoadingTimeOut: 10000,
       });
@@ -140,7 +141,7 @@ export const LivePlayerModal: React.FC<LivePlayerModalProps> = ({
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         setIsLoading(false);
-        setHasError(false);
+        video.volume = volume;
         video.play().catch(() => {
           // Autoplay policy prevented playback, keep muted
           video.muted = true;
@@ -152,37 +153,24 @@ export const LivePlayerModal: React.FC<LivePlayerModalProps> = ({
       hls.on(Hls.Events.ERROR, (_event, data) => {
         console.warn("HLS error:", data.type, data.details, data.fatal);
         if (data.fatal) {
-          switch (data.type) {
-            case Hls.ErrorTypes.NETWORK_ERROR:
-              console.log("Fatal network error encountered, attempting to recover...");
-              hls.startLoad();
-              break;
-            case Hls.ErrorTypes.MEDIA_ERROR:
-              console.log("Fatal media error encountered, recovering media...");
-              hls.recoverMediaError();
-              break;
-            default:
-              // Cannot recover fatal error
-              hls.destroy();
-              hlsRef.current = null;
-              setHasError(true);
-              setErrorMessage("No se pudo conectar con la señal en vivo.");
-              setIsLoading(false);
-              // Auto-fallback if another source exists
-              if (sources.length > 1 && activeSourceIndex < sources.length - 1) {
-                console.log("Switching to next source...");
-                setActiveSourceIndex((prev) => prev + 1);
-              }
-              break;
+          if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+            hls.startLoad();
+          } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+            hls.recoverMediaError();
+          } else {
+            setHasError(true);
+            setErrorMessage("Señal temporalmente no disponible.");
+            setIsLoading(false);
           }
         }
       });
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       // Native Safari / iOS support
       video.src = streamUrl;
+      video.volume = volume;
       video.addEventListener("loadedmetadata", () => {
         setIsLoading(false);
-        setHasError(false);
+        video.volume = volume;
         video.play().catch(() => {
           video.muted = true;
           setIsMuted(true);
@@ -273,13 +261,14 @@ export const LivePlayerModal: React.FC<LivePlayerModalProps> = ({
     if (touchStartXRef.current === null || touchStartYRef.current === null) return;
     const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
     const deltaY = e.changedTouches[0].clientY - touchStartYRef.current;
-    // Horizontal swipe threshold 60px, ensure horizontal is dominant
-    if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+
+    // Minimum swipe threshold of 50px horizontal and more horizontal than vertical
+    if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
       if (deltaX < 0) {
-        // Swipe left -> next channel
+        // Deslizar a la izquierda -> siguiente canal
         goToNextChannel();
       } else {
-        // Swipe right -> previous channel
+        // Deslizar a la derecha -> canal anterior
         goToPrevChannel();
       }
     }
@@ -362,9 +351,10 @@ export const LivePlayerModal: React.FC<LivePlayerModalProps> = ({
     const newMuted = !video.muted;
     video.muted = newMuted;
     setIsMuted(newMuted);
-    if (!newMuted && video.volume === 0) {
-      video.volume = 0.8;
-      setVolume(0.8);
+    if (!newMuted) {
+      const targetVol = volume > 0 ? volume : 0.5;
+      video.volume = targetVol;
+      setVolume(targetVol);
     }
   };
 
@@ -572,7 +562,7 @@ export const LivePlayerModal: React.FC<LivePlayerModalProps> = ({
               <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
 
-            {/* Channel Change Floating OSD HUD (Feedback al cambiar con flechas o swipe) */}
+            {/* Channel Change Floating OSD HUD (Feedback al cambiar con flechas o toques) */}
             {channelSwitchFeedback && (
               <div className="absolute top-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-black/85 backdrop-blur-md border border-red-500/50 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                 <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-red-600 text-white font-extrabold text-sm">

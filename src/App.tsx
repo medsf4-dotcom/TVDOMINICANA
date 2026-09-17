@@ -16,6 +16,7 @@ import { SmartTVView } from "./components/SmartTVView";
 import { TabletDashboardView } from "./components/TabletDashboardView";
 import { MobileView } from "./components/MobileView";
 import { DOMINICAN_CHANNELS } from "./data/channels";
+import { LegalDisclaimer } from "./components/LegalDisclaimer";
 import { CategoryFilter, TVChannel, DeviceFormat } from "./types";
 import {
   Flame,
@@ -491,6 +492,9 @@ export default function App() {
               </ul>
             </div>
           </div>
+
+          {/* Legal Disclaimer & Limitation of Liability */}
+          <LegalDisclaimer />
 
           <div className="text-center text-[11px] text-zinc-600 pt-4">
             RD TV Dominicana &copy; {new Date().getFullYear()} &mdash; Hecho con orgullo para todos los dominicanos en la isla y en el mundo.

@@ -43,7 +43,7 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(0.5);
   const [showRemote, setShowRemote] = useState(false);
   const [showOSD, setShowOSD] = useState(true);
   const [currentTime, setCurrentTime] = useState("");
@@ -135,7 +135,7 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
     const streamUrl = currentSource.url;
     if (!streamUrl) return;
 
-    let retryCount = 0;
+    video.volume = volume;
 
     if (Hls.isSupported()) {
       const hls = new Hls({
@@ -150,6 +150,7 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
       hls.attachMedia(video);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.volume = volume;
         video.play().catch(() => {
           video.muted = true;
           setIsMuted(true);
@@ -160,35 +161,20 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
       hls.on(Hls.Events.ERROR, (_evt, data) => {
         if (data.fatal) {
           if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-            retryCount++;
-            if (retryCount <= 2) {
-              hls.startLoad();
-            } else if (sources.length > 1 && activeSourceIndex < sources.length - 1) {
-              console.log("Switching TV view to alternate source due to network error...");
-              setActiveSourceIndex((prev) => prev + 1);
-            }
+            hls.startLoad();
           } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
             hls.recoverMediaError();
-          } else {
-            if (sources.length > 1 && activeSourceIndex < sources.length - 1) {
-              console.log("Switching TV view to alternate source due to fatal error...");
-              setActiveSourceIndex((prev) => prev + 1);
-            }
           }
         }
       });
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = streamUrl;
+      video.volume = volume;
       video.play().catch(() => {
         video.muted = true;
         setIsMuted(true);
         video.play().catch(() => {});
       });
-      video.onerror = () => {
-        if (sources.length > 1 && activeSourceIndex < sources.length - 1) {
-          setActiveSourceIndex((prev) => prev + 1);
-        }
-      };
     }
 
     return () => {
@@ -242,7 +228,7 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
         case "ArrowUp":
           e.preventDefault();
           if (videoRef.current) {
-            const newVol = Math.min(1, volume + 0.1);
+            const newVol = Math.min(1, Math.round((volume + 0.1) * 10) / 10);
             setVolume(newVol);
             videoRef.current.volume = newVol;
             videoRef.current.muted = false;
@@ -253,7 +239,7 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
         case "ArrowDown":
           e.preventDefault();
           if (videoRef.current) {
-            const newVol = Math.max(0, volume - 0.1);
+            const newVol = Math.max(0, Math.round((volume - 0.1) * 10) / 10);
             setVolume(newVol);
             videoRef.current.volume = newVol;
             if (newVol === 0) {
@@ -266,8 +252,14 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
         case "m":
         case "M":
           if (videoRef.current) {
-            videoRef.current.muted = !videoRef.current.muted;
-            setIsMuted(videoRef.current.muted);
+            const newMuted = !videoRef.current.muted;
+            videoRef.current.muted = newMuted;
+            setIsMuted(newMuted);
+            if (!newMuted) {
+              const targetVol = volume > 0 ? volume : 0.5;
+              videoRef.current.volume = targetVol;
+              setVolume(targetVol);
+            }
             triggerOSD();
           }
           break;
@@ -348,8 +340,14 @@ export const SmartTVView: React.FC<SmartTVViewProps> = ({
 
   const toggleMute = () => {
     if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(videoRef.current.muted);
+      const newMuted = !videoRef.current.muted;
+      videoRef.current.muted = newMuted;
+      setIsMuted(newMuted);
+      if (!newMuted) {
+        const targetVol = volume > 0 ? volume : 0.5;
+        videoRef.current.volume = targetVol;
+        setVolume(targetVol);
+      }
       triggerOSD();
     }
   };

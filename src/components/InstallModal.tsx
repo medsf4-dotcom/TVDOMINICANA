@@ -126,7 +126,7 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
             }`}
           >
             <Terminal className="w-4 h-4" />
-            <span>Compilar APK (Capacitor)</span>
+            <span>Publicar en Google Play Store (TV y Android)</span>
           </button>
         </div>
 
@@ -437,39 +437,78 @@ export const InstallModal: React.FC<InstallModalProps> = ({ isOpen, onClose }) =
             </div>
           )}
 
-          {/* TAB 4: COMPILAR APK CON CAPACITOR */}
+          {/* TAB 4: GOOGLE PLAY STORE (ANDROID Y ANDROID TV) */}
           {activeTab === "dev" && (
             <div className="space-y-4 text-xs">
               <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800">
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <Terminal className="w-4 h-4 text-blue-400" />
-                  Archivos de Proyecto Android TV Preconfigurados
-                </h3>
-                <p className="text-zinc-400 mt-1">
-                  Hemos generado la configuración oficial de <strong className="text-zinc-200">Capacitor</strong> (`capacitor.config.json`) y la plantilla de <strong className="text-zinc-200">AndroidManifest.xml</strong> con soporte completo de pantalla horizontal y Leanback para control remoto de TV.
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Terminal className="w-4 h-4 text-emerald-400" />
+                    Cómo publicar RD TV en Google Play Store (Para Celulares y Smart TV)
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                    Google Play Oficial
+                  </span>
+                </div>
+                <p className="text-zinc-400 mt-1.5 leading-relaxed">
+                  Para que cualquier usuario pueda buscar <strong>&ldquo;RD TV&rdquo;</strong> en la Play Store de su teléfono o de su Smart TV y presionar <strong>Instalar</strong>, se debe subir el paquete de la aplicación a Google Play Console.
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <div className="font-bold text-white">Comandos para generar tu archivo APK en Android Studio:</div>
-                <div className="p-3 rounded-xl bg-black/80 font-mono text-zinc-300 text-[11px] space-y-1.5 overflow-x-auto border border-zinc-800">
-                  <div className="text-zinc-500"># 1. Instalar dependencias nativas de Capacitor</div>
-                  <div className="text-emerald-400">npm install @capacitor/core @capacitor/android</div>
-                  <div className="text-zinc-500 mt-2"># 2. Compilar la aplicación web</div>
-                  <div className="text-emerald-400">npm run build</div>
-                  <div className="text-zinc-500 mt-2"># 3. Crear el proyecto Android nativo</div>
-                  <div className="text-emerald-400">npx cap add android</div>
-                  <div className="text-emerald-400">npx cap sync</div>
-                  <div className="text-zinc-500 mt-2"># 4. Abrir en Android Studio para generar el archivo .APK</div>
-                  <div className="text-emerald-400">npx cap open android</div>
+              {/* Steps 1 to 4 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <div className="p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 space-y-1.5">
+                  <div className="font-bold text-white flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px] font-black">1</span>
+                    <span>Cuenta en Google Play Console</span>
+                  </div>
+                  <p className="text-zinc-400 leading-relaxed text-[11px]">
+                    Crea tu cuenta de desarrollador en <strong className="text-zinc-200">play.google.com/console</strong>. Google solicita un pago único de registro de $25 USD.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 space-y-1.5">
+                  <div className="font-bold text-white flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px] font-black">2</span>
+                    <span>Generar el paquete .AAB oficial</span>
+                  </div>
+                  <p className="text-zinc-400 leading-relaxed text-[11px]">
+                    Google ya no acepta archivos .APK directos para tiendas; exige el formato <strong className="text-zinc-200">Android App Bundle (.aab)</strong>, el cual empaqueta tanto la versión para teléfonos como para Smart TV.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 space-y-1.5">
+                  <div className="font-bold text-white flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px] font-black">3</span>
+                    <span>Activar la casilla &ldquo;Android TV&rdquo;</span>
+                  </div>
+                  <p className="text-zinc-400 leading-relaxed text-[11px]">
+                    En la consola de Google Play, ve a <strong className="text-zinc-200">Configuración avanzada &gt; Factores de forma</strong> y activa la opción <strong className="text-emerald-400">Android TV</strong> para que aparezca en televisores.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800 space-y-1.5">
+                  <div className="font-bold text-white flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px] font-black">4</span>
+                    <span>Revisión y Publicación</span>
+                  </div>
+                  <p className="text-zinc-400 leading-relaxed text-[11px]">
+                    Subes el archivo, agregas las capturas de pantalla y en 24-48 horas Google aprueba la app para que cualquiera la descargue libremente.
+                  </p>
                 </div>
               </div>
 
-              <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800/80 text-zinc-400 flex items-start gap-2">
-                <Info className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
-                <span>
-                  En Android Studio seleccionas <strong className="text-zinc-300">Build &gt; Build Bundle(s) / APK(s) &gt; Build APK(s)</strong> y obtendrás el archivo instalable para copiar a tu USB.
-                </span>
+              {/* Tool Commands */}
+              <div className="space-y-2">
+                <div className="font-bold text-white">Opción recomendada por Google: Bubblewrap (TWA):</div>
+                <div className="p-3 rounded-xl bg-black/80 font-mono text-zinc-300 text-[11px] space-y-1.5 overflow-x-auto border border-zinc-800">
+                  <div className="text-zinc-500"># 1. Instalar la herramienta oficial de Google</div>
+                  <div className="text-emerald-400">npm install -g @bubblewrap/cli</div>
+                  <div className="text-zinc-500 mt-2"># 2. Inicializar con el manifiesto de RD TV</div>
+                  <div className="text-emerald-400">bubblewrap init --manifest=https://ais-pre-2h5cbz7mjqznoajju7n6mn-697794001347.us-east1.run.app/manifest.json</div>
+                  <div className="text-zinc-500 mt-2"># 3. Compilar el archivo listo para Google Play</div>
+                  <div className="text-emerald-400">bubblewrap build</div>
+                </div>
               </div>
             </div>
           )}
